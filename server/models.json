@@ -1,0 +1,22 @@
+[
+    {
+        "model_id": 123456,
+        "upload_time": "YYYY-MM-DDTHH:mm:ssZ",
+        "status": "ready"
+    },
+    {
+        "model_id": 123456,
+        "upload_time": "YYYY-MM-DDTHH:mm:ssZ",
+        "status": "ready"
+    },
+    {
+        "model_id": 123456,
+        "upload_time": "YYYY-MM-DDTHH:mm:ssZ",
+        "status": "ready"
+    },
+    {
+        "model_id": 123456,
+        "upload_time": "YYYY-MM-DDTHH:mm:ssZ",
+        "status": "ready"
+    }
+]
