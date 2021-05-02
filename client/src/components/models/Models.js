@@ -43,7 +43,7 @@ class Models extends Component{
 
         return (
             <div>
-                <h2>list</h2>
+                <h2 >list</h2>
                 <h3>
                     {this.state.modelss.map(modelss => 
                         <li>{modelss.model_id}</li>

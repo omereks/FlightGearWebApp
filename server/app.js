@@ -50,7 +50,7 @@ app.delete('/api/model', (req,res) => {
 
 //4 work
 app.get('/api/models', (req,res) => {
-    res.send(require('./models.json'));
+    res.send(require('./db/models.json'));
 });
 
 //5
