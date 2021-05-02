@@ -12,7 +12,7 @@ function func(params) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          firstParam: 'yourValue',
+          firstParam: `${params}`,
           secondParam: 'yourOtherValue',
         })
       })
@@ -39,7 +39,7 @@ class Models extends Component{
     
 
     render() {
-        console.log(this.state.modelss)
+        console.log("asdzsd")
 
         return (
             <div>
@@ -49,7 +49,7 @@ class Models extends Component{
                         <li>{modelss.model_id}</li>
                     )}
                 </h3>
-                <button onClick={func}>add</button>
+                <button onClick={this.state.modelss.map(modelss => func(modelss.model_id))}>add</button>
             </div>
           );
     }

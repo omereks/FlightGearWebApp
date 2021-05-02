@@ -25,12 +25,12 @@ app.use(function (req, res, next) {
 
 //1
 app.post('/api/model', (req,res) => {
-    res.send("check");
-    // const model_type = req.query.model_type;
-    // res.status(200).json({
-    //     messege: `model_type is ${model_type}`,
-    // })
+    req.on('data', function(chunk) {
+        res.send(chunk + "465");
+    });
 });
+
+
 //2
 app.get('/api/model', (req,res) => {
     const model_id = req.query.model_id;
