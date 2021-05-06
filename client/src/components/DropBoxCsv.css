@@ -1,0 +1,39 @@
+h2 {
+    color: brown;
+}
+.drop-box {
+    border-style:dotted;
+    width: 300px;
+    height: 300px;
+}
+.drop-box-highlighted {
+    border-style:solid;
+    background-color: cadetblue;
+    width: 300px;
+    height: 300px;
+}
+.span-left{
+    float: left;
+    font-size: small;
+}
+.span-right{
+    float: right;
+    font-size: small;
+}
+.Toggle{
+    position:relative;
+    float: center;
+}
+.firstToggle{
+    width: 40%;
+    float: left;
+}
+.secondToggle{
+    width: 50%;
+    float: right;
+    
+}
+.ToggleDiv{
+    width: 100%;
+    height: 40px;
+}
