@@ -33,10 +33,7 @@ class DropBoxCSV extends Component{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ // need to apply
-                firstParam: `zdf`,
-                secondParam: 'yourOtherValue',
-                })
+                body: JSON.stringify(this.state.text)
             })
         }
         else{
@@ -114,9 +111,11 @@ class DropBoxCSV extends Component{
                         fileReader.onload = function() {
                             const dataset = fileReader.result;
                             const result = dataset.split('\r\n').map(data => data.split(','));
-                            that.setState({text: result});
-                            console.log(result);
 
+                            that.setState({text: result}, () => {
+                                that.sendCSV();
+                                //console.log(that.state.text)
+                            })
                         };
                     });
 
@@ -126,12 +125,14 @@ class DropBoxCSV extends Component{
                     .forEach( async (file) => {
                         const text = await file.text();
                         const result = parase(test);
-                        that.setState({text: result});
-                        console.log(result);
+                        that.setState({text: result}, () => {
+                                that.sendCSV();
+                                //console.log(that.state.text)
+                            });
+                        //console.log(result);
                     });
-                    console.log(this.state.text)
-                    this.sendCSV();
-                }}
+                }
+                }
                 >Drop Here
                 </div>
             </div>
