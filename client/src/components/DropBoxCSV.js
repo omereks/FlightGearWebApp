@@ -115,6 +115,8 @@ class DropBoxCSV extends Component{
                             const dataset = fileReader.result;
                             const result = dataset.split('\r\n').map(data => data.split(','));
                             that.setState({text: result});
+                            console.log(result);
+
                         };
                     });
 
@@ -127,7 +129,7 @@ class DropBoxCSV extends Component{
                         that.setState({text: result});
                         console.log(result);
                     });
-
+                    console.log(this.state.text)
                     this.sendCSV();
                 }}
                 >Drop Here
