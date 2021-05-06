@@ -6,7 +6,7 @@ function func(params) {
     console.log("func");
 
     fetch('http://localhost:9876/api/model', {
-        method: 'POST',
+        method: 'POSTZZZZZZZ',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
