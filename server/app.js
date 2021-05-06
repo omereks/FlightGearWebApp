@@ -1,6 +1,10 @@
+const bodyParser = require('body-parser');
+
+
 const express = require('express')
 const app = express()
-
+app.use(bodyParser.json({limit: '10mb', extended: true}))
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}))
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
     // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -25,9 +29,12 @@ app.use(function (req, res, next) {
 
 //1
 app.post('/api/model', (req,res) => {
-    req.on('data', function(chunk) {
-        res.send(chunk + "465");
-    });
+    //getting model type from the uri
+    const model_type = req.query.model_type;
+    //getting data array from body
+    const dataArr = req.body;
+    //                                  learn(dataArr, model_type)           TODO
+    res.send(JSON.stringify(dataArr));
 });
 
 

@@ -33,7 +33,7 @@ class DropBoxCSV extends Component{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(this.state.text)
+                body: JSON.stringify(this.state.text) //sending json each array is a row in csv file
             })
         }
         else{
