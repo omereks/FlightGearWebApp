@@ -32,9 +32,18 @@ app.post('/api/model', (req,res) => {
     //getting model type from the uri
     const model_type = req.query.model_type;
     //getting data array from body
-    const dataArr = req.body;
-    //                                  learn(dataArr, model_type)           TODO
-    res.send(JSON.stringify(dataArr));
+    const data = req.body;
+    var dataArr = Object.values(data);
+
+    var LearnArr = dataArr[0];
+    var DetectArr = dataArr[1];
+
+
+    //learn(LearnArr, DetectArr,  model_type)           TODO
+
+
+    
+    res.send(JSON.stringify(LearnArr));
 });
 
 

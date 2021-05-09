@@ -12,10 +12,12 @@ class DropBoxCSV extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            highlighted: false,
+            Learnhighlighted: false,
+            Detecthighlighted: false,
             isLearnMode: false,
             isHybrid: true,
-            text: [],
+            DataLearn: [],
+            DataDetect: [],
             modelTrainID: 0
         }
         
@@ -26,69 +28,38 @@ class DropBoxCSV extends Component{
     }
 
     sendCSV() {
-        if(this.state.isLearnMode){
-            fetch(`http://localhost:9876/api/model?model_type=${this.state.isHybrid? 'hybrid': 'regression'}`, {
-                method: 'POST',
-                headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(this.state.text) //sending json each array is a row in csv file
-            })
-        }
-        else{
-            
-            fetch(`http://localhost:9876/api/anomaly?model_id=${this.state.modelTrainID}`, {
-                method: 'POST',
-                headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ // need to apply
-                firstParam: `zdf`,
-                secondParam: 'yourOtherValue',
-                })
-            })
-            console.log("detect")
-        }
+        console.log("Sd")
+        fetch(`http://localhost:9876/api/model?model_type=${this.state.isHybrid? 'hybrid': 'regression'}`, {
+            method: 'POST',
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({Learn: this.state.DataLearn , Detect: this.state.DataDetect}) //sending json each array is a row in csv file
+        })
     }
 
     
     render() {
         return (
             <div>
-                <h3>Drop Zone CSV File</h3>
+                <h3>Upload CSV Files</h3>
 
-                {/* Toggle Detect / Learn */}
+                {/* Toggle Hybrid / Regression */}
                 <div className="ToggleDiv">
-                    <div className="firstToggle">
-                        <span className="span-left">detect</span>
-                        <Toggle
-                            
-                            defaultChecked={this.state.isLearnMode}
-                            icons={false}
-                            onChange={(toggle) => {
-                                this.setState({isLearnMode: !this.state.isLearnMode});
-                                //this.state.isLearnMode ? document.getElementById("secondToggle").style.display="none" : document.getElementById("secondToggle").style.display="block"; 
-                            }} />
-                        <span className="span-right">learn</span>
-                    </div>
-                    <div className="secondToggle">
-                        <span className="span-left">Hybrid</span>
-                        <Toggle 
-                            className="Toggle"
-                            disabled={!this.state.isLearnMode}
-                            defaultChecked={!this.state.isHybrid}
-                            icons={false}
-                            onChange={(toggle) => this.setState({isHybrid: !this.state.isHybrid})}
-                            />
-                        <span className="span-right">Regression</span>
-                    </div>
+                    <span className="span-left">Hybrid</span>
+                    <Toggle 
+                        className="Toggle"
+                        defaultChecked={!this.state.isHybrid}
+                        icons={false}
+                        onChange={(toggle) => this.setState({isHybrid: !this.state.isHybrid})}
+                        />
+                    <span className="span-right">Regression</span>
                 </div>
-                {/* Drop Zone */}
-                <div className={this.state.highlighted? "drop-box-highlighted" :"drop-box"} 
-                onDragEnter={() => {this.setState({highlighted: true})}}
-                onDragLeave={() => {this.setState({highlighted: false})}}
+                {/* Drop Zone Train */}
+                <div className={this.state.Learnhighlighted? "drop-box-highlighted" :"drop-box"} 
+                onDragEnter={() => {this.setState({Learnhighlighted: true})}}
+                onDragLeave={() => {this.setState({Learnhighlighted: false})}}
                 //on drag file to box
                 onDragOver={(e) => {
                     e.preventDefault();
@@ -97,7 +68,7 @@ class DropBoxCSV extends Component{
 
                 //on drop file her
                 onDrop={(e)=> {
-                    this.setState({highlighted: false});
+                    this.setState({Learnhighlighted: false});
                     e.preventDefault();
                     e.stopPropagation();
                     var that = this;
@@ -112,9 +83,8 @@ class DropBoxCSV extends Component{
                             const dataset = fileReader.result;
                             const result = dataset.split('\r\n').map(data => data.split(','));
 
-                            that.setState({text: result}, () => {
-                                that.sendCSV();
-                                //console.log(that.state.text)
+                            that.setState({DataLearn: result}, () => {
+                                //console.log(that.state.DataLearn)
                             })
                         };
                     });
@@ -123,19 +93,85 @@ class DropBoxCSV extends Component{
                     Array.from(e.dataTransfer.files) 
                     .filter((file) => file.type === "text/csv")
                     .forEach( async (file) => {
-                        const text = await file.text();
+                        const DataLearn = await file.text();
                         const result = parase(test);
-                        that.setState({text: result}, () => {
-                                that.sendCSV();
+                        that.setState({DataLearn: result}, () => {
                                 //console.log(that.state.text)
                             });
                         //console.log(result);
                     });
                 }
                 }
-                >Drop Here
+                >Drop Train CSV Here
+                </div>
+ 
+
+
+                
+                <br></br>
+                
+                {/* Drop Zone Detect */}
+                <div className={this.state.Detecthighlighted? "drop-box-highlighted" :"drop-box"} 
+                onDragEnter={() => {this.setState({Detecthighlighted: true})}}
+                onDragLeave={() => {this.setState({Detecthighlighted: false})}}
+                //on drag file to box
+                onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }}
+
+                //on drop file her
+                onDrop={(e)=> {
+                    this.setState({Detecthighlighted: false});
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var that = this;
+
+                    // For windows
+                    Array.from(e.dataTransfer.files) 
+                    .filter((file) => file.type ===  "application/vnd.ms-excel")
+                    .forEach( async (file) => {
+                        const fileReader = new FileReader();
+                        fileReader.readAsText(file);
+                        fileReader.onload = function() {
+                            const dataset = fileReader.result;
+                            const result = dataset.split('\r\n').map(data => data.split(','));
+
+                            that.setState({DataDetect: result}, () => {
+                                //console.log(that.state.DataDetect)
+                            })
+                        };
+                    });
+
+                    //For linux
+                    Array.from(e.dataTransfer.files) 
+                    .filter((file) => file.type === "text/csv")
+                    .forEach( async (file) => {
+                        const DataDetect = await file.text();
+                        const result = parase(test);
+                        that.setState({DataDetect: result}, () => {
+                                //console.log(that.state.DataDetect)
+                            });
+                        //console.log(result);
+                    });
+                }
+                }
+                >Drop Detect CSV Here
+                </div>
+
+
+                <div>
+                    <button disabled={(this.state.DataDetect.length == 0) || (this.state.DataLearn.length == 0)}
+                        onClick={() => this.sendCSV()}>
+                            Upload CSV Files</button>
                 </div>
             </div>
+            
+            
+
+
+
+
           );
     }
 }
