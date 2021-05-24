@@ -1,3 +1,4 @@
+const learnAlgo = require('./anomalies_Algo');
 const bodyParser = require('body-parser');
 
 
@@ -39,12 +40,12 @@ app.post('/api/model', (req,res) => {
     var DetectArr = dataArr[1];
 
 
-    //  var result = learn(LearnArr, DetectArr,  model_type)           TODO
+    var result = learnAlgo.learnAlgo(LearnArr, DetectArr,  model_type)
 
-    //  [123, "A - F"]
+    //  [[123, "aclkm - sdfaf"],[123, "A - F"],...]
 
     
-    res.send(JSON.stringify(LearnArr[0][0]));
+    res.send(JSON.stringify(result));
 });
 
 

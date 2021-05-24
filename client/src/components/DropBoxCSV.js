@@ -37,6 +37,7 @@ class DropBoxCSV extends Component{
             },
             body: JSON.stringify({Learn: this.state.DataLearn , Detect: this.state.DataDetect}) //sending json each array is a row in csv file
         })
+        
     }
 
     

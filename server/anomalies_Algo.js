@@ -323,3 +323,17 @@ detctor.learnNormal(ts, "hybrid");
 detctor.detect(ts);
 
 console.log("hello");
+
+
+function learnAlgo(LearnArr, DetectArr,  model_type) {
+    var ts = new TimeSeries(LearnArr);
+    var detctor = new SimpleAnomalyDetector();
+    detctor.learnNormal(ts, model_type);
+
+    var ts2 = new TimeSeries(DetectArr);
+    //detctor.detect(ts2);
+
+    
+    return(detctor.detect(ts2))
+}
+module.exports.learnAlgo = learnAlgo
