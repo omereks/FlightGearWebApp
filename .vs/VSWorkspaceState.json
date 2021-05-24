@@ -1,12 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\client",
-    "\\client\\src",
-    "\\client\\src\\components",
     "\\server",
     "\\server\\Anomaly_Algorithems"
   ],
-  "SelectedNode": "\\server\\Anomaly_Algorithems\\TimeSeries.js",
+  "SelectedNode": "\\server\\Anomaly_Algorithems\\SimpleAnomalyDetector.js",
   "PreviewInSolutionExplorer": false
 }

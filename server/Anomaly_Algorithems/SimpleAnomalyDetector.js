@@ -26,9 +26,16 @@ class correlatedFeatures {
 class SimpleAnomalyDetector {
     constructor() {
         this.cf = [];
-        this.correlationForDetect = 0;
+        this.correlationForDetect = null;
     }
-    learnNormal(timeSeries) {
+
+
+    learnNormalHybrid(timeSeries, hybridOrReg) {
+        if (hybridOrReg == "hybrid") {
+            this.correlationForDetect = 0.5;
+        } else {
+            this.correlationForDetect = 0.9;
+        }
         var numOfFeatures = timeSeries.getFeatures().length;
         var numOfLines = timeSeries.getFeatureVector(0).lentgh;
         for (var i = 0; i < numOfFeatures; i++) {
@@ -37,13 +44,13 @@ class SimpleAnomalyDetector {
             var featureVector1 = timeSeries.getFeatureVector(i);
             for (var j = i + 1; j < numOfFeatures; j++) {
                 var featureVector2 = timeSeries.getFeatureVector(j);
-                var currentPearson = pearson(featureVector1[0], featureVector1[0]);
-                if ((currentCF.corrlation < currentPearson) && (isCorrelated(currentPearson))) { // todo here the difference between hybrid and regression
+                var currentPearson = pearson(featureVector1[0], featureVector2[0]);
+                if ((currentCF.corrlation < currentPearson) && (this.correlationForDetect <= currentPearson)) { // todo here the difference between hybrid and regression
                     var points = [];
                     for (var x = 0; x < numOfLines; x++) {
                         points.push(new Point(timeSeries.getFeatureVector(i)[x], timeSeries.getFeatureVector(j)[x]));
                     }
-                    if (this.correlationForDetect <= currentPearson) { // todo implementation of hybrid or regression 
+                    if ( 0.9 <= currentPearson) { // todo implementation of hybrid or regression 
                         currentCF.feature1 = timeSeries.getFeatures()[i];
                         currentCF.feature2 = timeSeries.getFeatures()[j];
                         currentCF.corrlation = currentPearson;
@@ -62,9 +69,10 @@ class SimpleAnomalyDetector {
                     }
                 }
             }
-            if (isCorrelated(currentCF.corrlation) == true) { cf.push(currentCF); }
+            if (this.correlationForDetect <= currentCF.corrlation) { this.cf.push(currentCF); }
         }
     }
+    
 
     detect(timeSeries) {
         var reports = [];
@@ -102,7 +110,7 @@ class SimpleAnomalyDetector {
     findThreshold(size, points) {
         var linearRegression = linear_reg(points, size); // todo anomaly detection util
         var finalDev = 0;
-        var tempdev;
+        var tempDev;
         for (var i = 0; i < size; i++) {
             var p = new Point((points[i].x, points[i].y));
             tempDev =  dev(p, linearRegression); // todo anomaly detection util
@@ -110,6 +118,7 @@ class SimpleAnomalyDetector {
         }
         return finalDev *= 1.1;
     }
+
     isCorrelated(correlation) {
         return correlationForDetect <= correlation;
     }
@@ -117,6 +126,7 @@ class SimpleAnomalyDetector {
     getDistance(p1, p2) {
         return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
     }
+
     getNormalModel() {
         return this.cf;
     }
