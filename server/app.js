@@ -39,11 +39,12 @@ app.post('/api/model', (req,res) => {
     var DetectArr = dataArr[1];
 
 
-    //learn(LearnArr, DetectArr,  model_type)           TODO
+    //  var result = learn(LearnArr, DetectArr,  model_type)           TODO
 
+    //  [123, "A - F"]
 
     
-    res.send(JSON.stringify(LearnArr));
+    res.send(JSON.stringify(LearnArr[0][0]));
 });
 
 
