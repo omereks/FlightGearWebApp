@@ -37,9 +37,9 @@ app.post('/api/model', (req,res) => {
     var dataArr = Object.values(data);
 
     var LearnArr = dataArr[0];
-    //console.log("Learn Arr" + LearnArr);
+    console.log("Learn Arr" + LearnArr); //todo delete
     var DetectArr = dataArr[1];
-    //console.log("Detect Arr" + DetectArr);
+    console.log("Detect Arr" + DetectArr); //todo delete
 
     var result = learnAlgo.learnAlgo(LearnArr, DetectArr,  model_type)
 
