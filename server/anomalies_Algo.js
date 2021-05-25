@@ -1,3 +1,4 @@
+const { report } = require("./app");
 
 class Point {
     constructor(x, y) {
@@ -149,20 +150,12 @@ function findMinCircle(points, size) {
 }
 
 class TimeSeries {
-    constructor(csvMatrix) {
-        // flight features according to XML file
-        this.features = [
-            "aileron", "elevator", "rudder", "flaps", "slats", "speedbrake", "throttle", "throttle", "engine-pump", "engine-pump",
-            "electric-pump", "electric-pump", "external-power", "APU-generator", "latitude-deg", "longitude-deg", "altitude-ft", "roll-deg", "pitch-deg",
-            "heading-deg", "side-slip-deg", "airspeed-kt", "glideslope", "vertical-speed-fps", "airspeed-indicator_indicated-speed-kt", "altimeter_indicated-altitude-ft",
-            "altimeter_pressure-alt-ft", "attitude-indicator_indicated-pitch-deg", "attitude-indicator_indicated-roll-deg", "attitude-indicator_internal-pitch-deg",
-            "attitude-indicator_internal-roll-deg", "encoder_indicated-altitude-ft", "encoder_pressure-alt-ft", "gps_indicated-altitude-ft", "gps_indicated-ground-speed-kt",
-            "gps_indicated-vertical-speed", "indicated-heading-deg", "magnetic-compass_indicated-heading-deg", "slip-skid-ball_indicated-slip-skid",
-            "turn-indicator_indicated-turn-rate", "vertical-speed-indicator_indicated-speed-fpm", "engine_rpm"];
-        this.csvMatrix = csvMatrix;
+    constructor(arr) {
+        this.features = arr[0];
+        this.csvMatrix = arr;
     }
 
-    // method returns specific vector of given feature from csv matrix
+    // method returns specific vector of given feature from the matrix
     getFeatureVector(x) {
         var line = [];
         for (var i = 0; i < this.csvMatrix.length; i++) {
@@ -217,12 +210,12 @@ class SimpleAnomalyDetector {
     }
 
     findThreshold(size, points) {
-        var linearRegression = linear_reg(points, size); // todo anomaly detection util
+        var linearRegression = linear_reg(points, size);
         var finalDev = 0;
         var tempDev;
         for (var i = 0; i < size; i++) {
             var p = new Point(points[i].x, points[i].y);
-            tempDev = dev(p, linearRegression); // todo anomaly detection util
+            tempDev = dev(p, linearRegression);
             finalDev = Math.max(tempDev, finalDev);
         }
         return finalDev *= 1.1;
@@ -234,8 +227,7 @@ class SimpleAnomalyDetector {
         } else {
             this.correlationForDetect = 0.9;
         }
-        //var numOfFeatures = timeSeries.getFeatures().length;
-        var numOfFeatures = 3; // todo
+        var numOfFeatures = timeSeries.getFeatures().length;
         var numOfLines = timeSeries.getFeatureVector(0).length;
         for (var i = 0; i < numOfFeatures; i++) {
             var currentCF = new correlatedFeatures();
@@ -284,10 +276,9 @@ class SimpleAnomalyDetector {
             if (this.cf[i].isStrongCorrelation) {
                 for (var j = 0; j < featureVector1.length; j++) {
                     var p = new Point(featureVector1[j], featureVector2[j]);
-                    var deviation = dev(p, this.cf[i].line_reg); // todo dev function from anomaly detectiopj util
+                    var deviation = dev(p, this.cf[i].line_reg);
                     if (this.cf[i].threshold < deviation) {
                         description = this.cf[i].feature1 + "-" + cf[i].feature2;
-                        //AnomalyReport report(description, j + 1);
                         reports.push_back(new AnomalyReport(description, j + 1));
                     }
                 }
@@ -299,7 +290,7 @@ class SimpleAnomalyDetector {
                     if (this.cf[i].threshold < deviation) {
                         var description = this.cf[i].feature1 + "-" + this.cf[i].feature2;
                         //AnomalyReport report(description, j + 1);
-                        reports.push_back(new AnomalyReport(description, j + 1));
+                        reports.push_back(new AnomalyReport(description, j + 1)); // todo maybe j without +1
                     }
                 }
             }
@@ -315,7 +306,9 @@ class SimpleAnomalyDetector {
         return this.cf;
     }
 }
-console.log("hello");
+
+
+/*console.log("hello");
 var arr = [[30, 16, 2],[31, 15, 3], [32, 15, 4], [33, 15, 5], [34, 15, 6], [35, 15, 7], [36, 15, 8], [37, 15, 9], [38, 15, 10]];
 var ts = new TimeSeries(arr);
 var detctor = new SimpleAnomalyDetector();
@@ -323,17 +316,22 @@ detctor.learnNormal(ts, "hybrid");
 detctor.detect(ts);
 
 console.log("hello");
+*/
 
-
-function learnAlgo(LearnArr, DetectArr,  model_type) {
-    var ts = new TimeSeries(LearnArr);
-    var detctor = new SimpleAnomalyDetector();
-    detctor.learnNormal(ts, model_type);
-
-    var ts2 = new TimeSeries(DetectArr);
-    //detctor.detect(ts2);
-
-    
-    return(detctor.detect(ts2))
+function learnAlgo(LearnArr, DetectArr, model_type) {
+    let learnTs = new TimeSeries(LearnArr);
+    let detectTs = new TimeSeries(DetectArr);
+    let detector = new SimpleAnomalyDetector();
+    detector.learnNormal(learnTs, model_type);
+    let reports = detector.detect(detectTs);
+    // convert reports into wanted format of [[13, "Aileron - Degree"], [68, "Latitude - Compass Degree"]]
+    let result = [];
+    for (let i = 0; i < reports.length; i++) {
+        report = [];
+        report[0] = reports[i].timeStep;
+        report[1] = reports[i].description;
+        result.push(report);
+    }
+    return result
 }
 module.exports.learnAlgo = learnAlgo

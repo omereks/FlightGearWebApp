@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\server",
-    "\\server\\Anomaly_Algorithems"
+    "\\server"
   ],
-  "SelectedNode": "\\server\\Anomaly_Algorithems\\SimpleAnomalyDetector.js",
+  "SelectedNode": "\\server\\anomalies_Algo.js",
   "PreviewInSolutionExplorer": false
 }
