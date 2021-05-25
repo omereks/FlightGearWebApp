@@ -327,10 +327,10 @@ function learnAlgo(LearnArr, DetectArr, model_type) {
     // convert reports into wanted format of [[13, "Aileron - Degree"], [68, "Latitude - Compass Degree"]]
     let result = [];
     for (let i = 0; i < reports.length; i++) {
-        report = [];
-        report[0] = reports[i].timeStep;
-        report[1] = reports[i].description;
-        result.push(report);
+        let anomaly = [];
+        anomaly.push(reports[i].timeStep);
+        anomaly.push(reports[i].description);
+        result.push(anomaly);
     }
     return result
 }
