@@ -7,17 +7,29 @@ import AnomalyResult from './components/anomalyData';
 
 
 class App extends Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+        AnomalyArr: ["no"]
+    }
+    
+}
+
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload............
-          </p>
-          <DropBoxCSV></DropBoxCSV>
-          <AnomalyResult></AnomalyResult>
-          <Models></Models>
+          <h1 className>WebApp</h1>
+          <div className="wrapApp">
+            <div className="dropBox">
+              <DropBoxCSV getAnomalyArr={(arr)=>{
+                this.setState({AnomalyArr: arr})
+              }}></DropBoxCSV>
+            </div>
+            <div className="AnomalyResult">
+              <AnomalyResult AnomalyArr={this.state.AnomalyArr}></AnomalyResult>
+            </div>
+          </div>
         </header>
       </div>
     );

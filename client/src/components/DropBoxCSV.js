@@ -18,6 +18,7 @@ class DropBoxCSV extends Component{
             isHybrid: true,
             DataLearn: [],
             DataDetect: [],
+            AnomalyArr: ["asd"],
             modelTrainID: 0
         }
         
@@ -26,6 +27,11 @@ class DropBoxCSV extends Component{
     componentDidMount() {
 
     }
+
+    handleChange = selectedOption => {
+        this.setState({ selectedOption });
+        this.props.getChoice(selectedOption)
+      };
 
     sendCSV() {
         console.log("Sd")
@@ -37,7 +43,16 @@ class DropBoxCSV extends Component{
             },
             body: JSON.stringify({Learn: this.state.DataLearn , Detect: this.state.DataDetect}) //sending json each array is a row in csv file
         })
-        
+        .then(response => response.json())
+        .then(data => {
+          this.setState({AnomalyArr: data});
+          console.log("getting fetch  ", data)
+          this.props.getAnomalyArr(data)
+          console.log('Success:', data);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
     }
 
     
