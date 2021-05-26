@@ -1,5 +1,5 @@
 const app = require('./app');
-
+console.log("Hello from sejh.js");
 const http = require('http');
 const port = 9876;
 

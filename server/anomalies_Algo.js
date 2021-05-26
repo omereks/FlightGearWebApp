@@ -5,6 +5,8 @@ class Point {
         this.x = x;
         this.y = y;
     }
+    getX() {return this.x; }
+    getY() { return this.y; }
 }
 class Line {
     constructor(a, b) {
@@ -25,7 +27,7 @@ class Circle {
 function avg(x, size) {
     let sum = 0;
     for (let i = 0; i < size; i++) {
-        sum += x[i];
+        sum += parseFloat(x[i]);
     }
     if (size * sum === 0) {
         return 0;
@@ -36,7 +38,7 @@ function vars(x, size) {
     let av = avg(x, size);
     let sum = 0;
     for (let i = 0; i < size; i++) {
-        let temp = Math.pow(x[i], 2);
+        let temp = Math.pow(parseFloat(x[i]), 2);
         sum += temp;
     }
     let val = sum / size;
@@ -45,15 +47,17 @@ function vars(x, size) {
 function cov(x, y, size) {
     let covar, sum = 0;
     for (let i = 0; i < size; i++) {
-        sum += (x[i] - avg(x, size)) * (y[i] - avg(y, size));
+        sum += (parseFloat(x[i]) - avg(x, size)) * (parseFloat(y[i]) - avg(y, size));
     }
     covar = sum / size;
     return covar;
 }
 function pearson(x, y, size) {
-    let t = Math.sqrt(vars(x, size)) * Math.sqrt(vars(y, size));
+    /*let t = Math.sqrt(vars(x, size)) * Math.sqrt(vars(y, size));
     let temp = cov(x, y, size) / x;
-    return temp;
+    return temp;*/
+    let result = cov(x, y, size) / (Math.sqrt(vars(x, size)) * Math.sqrt(vars(y, size)));
+    return result;
 }
 function linear_reg(points, size) {
     let a, b;
@@ -100,11 +104,11 @@ function trivialCircle3(p1, p2, p3) {
     return new Circle(center, radius);
 }
 function trivial(P) {
-    if (P.size() === 0)
+    if (P.length === 0)
         return new Circle(new Point(0, 0), 0);
-    else if (P.size() === 1)
+    else if (P.length === 1)
         return new Circle(P[0], 0);
-    else if (P.size() === 2)
+    else if (P.length === 2)
         return trivialCircle2(P[0], P[1]);
 
     // maybe 2 of the points define a small circle that contains the 3ed point
@@ -122,19 +126,18 @@ function trivial(P) {
 }
 function minds(P, R, n) {
     let element;
-    if (n === 0 || R.size() === 3) {
+    if (n === 0 || R.length === 3) {
         return trivial(R);
     }
+    let i = Math.floor(Math.random() * n);
 
-    // remove random point p
-    // swap is more efficient than remove
-    //srand (time(NULL));
-    let i = Math.random() % n;
-    let p = new Point(P[i].x, P[i].y);
+    //console.log("P Grand: ", P);
+    //console.log("p x: ", i);
+
+    let p = new Point(parseFloat(P[i].x), parseFloat(P[i].y));
     element = P[i];
     P[i] = P[n - 1];
     P[n - 1] = element;
-    // swap(P[i],P[n-1]);
 
     let c = minds(P, R, n - 1);
 
@@ -146,7 +149,7 @@ function minds(P, R, n) {
     return minds(P, R, n - 1);
 }
 function findMinCircle(points, size) {
-    return minds(points, {}, size);
+    return minds(points, [], size);
 }
 
 class TimeSeries {
@@ -158,7 +161,7 @@ class TimeSeries {
     // method returns specific vector of given feature from the matrix
     getFeatureVector(x) {
         let line = [];
-        for (let i = 0; i < this.csvMatrix.length; i++) {
+        for (let i = 1; i < this.csvMatrix.length; i++) { // to do changed index to 1
             line.push(this.csvMatrix[i][x]);
         }
         return line;
@@ -185,11 +188,11 @@ class AnomalyReport {
     }
 }
 
-class TimeSeriesAnomalyDetector {
+/*class TimeSeriesAnomalyDetector {
     constructor() { }
     // todo learn normal
 
-}
+}*/
 
 class correlatedFeatures {
     constructor() {
@@ -222,7 +225,6 @@ class SimpleAnomalyDetector {
     }
 
     learnNormal(timeSeries, hybridOrReg) {
-        console.log("Start Learn Normal");
         if (hybridOrReg == "hybrid") {
             this.correlationForDetect = 0.5;
         } else {
@@ -231,6 +233,7 @@ class SimpleAnomalyDetector {
         let numOfFeatures = timeSeries.getFeatures().length;
         let numOfLines = timeSeries.getFeatureVector(0).length;
         for (let i = 0; i < numOfFeatures; i++) {
+            
             let currentCF = new correlatedFeatures();
             currentCF.corrlation = 0;
             let featureVector1 = timeSeries.getFeatureVector(i);
@@ -272,12 +275,12 @@ class SimpleAnomalyDetector {
             let featureVector1 = timeSeries.getFeatureVector(numOfFeature1);
             let featureVector2 = timeSeries.getFeatureVector(numOfFeature2);
             if (this.cf[i].isStrongCorrelation) {
-                for (let j = 1; j < featureVector1.length; j++) { // todo changed from j = 0 to j = 1
+                for (let j = 1; j < featureVector1.length; j++) {
                     let p = new Point(featureVector1[j], featureVector2[j]);
                     let deviation = dev(p, this.cf[i].line_reg);
                     if (this.cf[i].threshold < deviation) {
-                        description = this.cf[i].feature1 + "-" + this.cf[i].feature2;
-                        reports.push_back(new AnomalyReport(description, j + 1));
+                        let description = this.cf[i].feature1 + "-" + this.cf[i].feature2;
+                        reports.push(new AnomalyReport(description, j + 1));
                     }
                 }
                 // if feature has a weak correlation
@@ -288,7 +291,6 @@ class SimpleAnomalyDetector {
                     let deviation = this.getDistance(p, centerOfCircle);
                     if (this.cf[i].threshold < deviation) {
                         let description = this.cf[i].feature1 + "-" + this.cf[i].feature2;
-                        //AnomalyReport report(description, j + 1);
                         reports.push_back(new AnomalyReport(description, j + 1)); // todo maybe j without +1
                     }
                 }
@@ -306,16 +308,6 @@ class SimpleAnomalyDetector {
     }
 }
 
-
-/*console.log("hello");
-var arr = [[30, 16, 2],[31, 15, 3], [32, 15, 4], [33, 15, 5], [34, 15, 6], [35, 15, 7], [36, 15, 8], [37, 15, 9], [38, 15, 10]];
-var ts = new TimeSeries(arr);
-var detctor = new SimpleAnomalyDetector();
-detctor.learnNormal(ts, "hybrid");
-detctor.detect(ts);
-
-console.log("hello");
-*/
 
 function learnAlgo(LearnArr, DetectArr, model_type) {
     console.error("Start Learn Algo")
