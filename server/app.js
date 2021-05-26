@@ -37,15 +37,12 @@ app.post('/api/model', (req,res) => {
     var dataArr = Object.values(data);
 
     var LearnArr = dataArr[0];
-    console.log("Learn Arr" + LearnArr); //todo delete
+    //console.log("Learn Arr" + LearnArr); //todo delete
     var DetectArr = dataArr[1];
-    console.log("Detect Arr" + DetectArr); //todo delete
-
+    //console.log("Detect Arr" + DetectArr); //todo delete
     var result = learnAlgo.learnAlgo(LearnArr, DetectArr,  model_type)
 
     //  [[123, "aclkm - sdfaf"],[123, "A - F"],...]
-
-    
     res.send(JSON.stringify(result));
 });
 
