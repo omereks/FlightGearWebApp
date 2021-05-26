@@ -23,7 +23,7 @@ class Circle {
         this.radius = radius;
     }
 }
-
+// Probablity functions
 function avg(x, size) {
     let sum = 0;
     for (let i = 0; i < size; i++) {
@@ -76,6 +76,7 @@ function dev(p, l) {
     fx = l.f(p.x);
     return Math.abs(fx - p.y);
 }
+// minimal circle functions
 function dist(a, b) {
     return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 }
@@ -125,16 +126,15 @@ function trivial(P) {
     return trivialCircle3(P[0], P[1], P[2]);
 }
 function minds(P, R, n) {
+
     let element;
     if (n === 0 || R.length === 3) {
         return trivial(R);
     }
-    let i = Math.floor(Math.random() * n);
-
-    //console.log("P Grand: ", P);
-    //console.log("p x: ", i);
-
-    let p = new Point(parseFloat(P[i].x), parseFloat(P[i].y));
+    let i = Math.floor(Math.random() * n) + 1;
+    let p = new Point(parseFloat(P[i].x), parseFloat(P[i].y)); // todo not sure if parse is needed
+    
+    console.log("Line 136:", p);
     element = P[i];
     P[i] = P[n - 1];
     P[n - 1] = element;
@@ -149,7 +149,8 @@ function minds(P, R, n) {
     return minds(P, R, n - 1);
 }
 function findMinCircle(points, size) {
-    return minds(points, [], size);
+    let list = [];
+    return minds(points, list, size);
 }
 
 class TimeSeries {
@@ -225,6 +226,7 @@ class SimpleAnomalyDetector {
     }
 
     learnNormal(timeSeries, hybridOrReg) {
+        console.log("Starting learn Algo");
         if (hybridOrReg == "hybrid") {
             this.correlationForDetect = 0.5;
         } else {
@@ -268,6 +270,7 @@ class SimpleAnomalyDetector {
     }
 
     detect(timeSeries) {
+        console.log("Starting Detect Algo");
         let reports = [];
         for (let i = 0; i < this.cf.length; i++) {
             let numOfFeature1 = timeSeries.getFeatureNum(this.cf[i].feature1);
@@ -310,7 +313,7 @@ class SimpleAnomalyDetector {
 
 
 function learnAlgo(LearnArr, DetectArr, model_type) {
-    console.error("Start Learn Algo")
+    
     let learnTs = new TimeSeries(LearnArr);
     let detectTs = new TimeSeries(DetectArr);
     let detector = new SimpleAnomalyDetector();
@@ -327,3 +330,4 @@ function learnAlgo(LearnArr, DetectArr, model_type) {
     return result
 }
 module.exports.learnAlgo = learnAlgo
+//
