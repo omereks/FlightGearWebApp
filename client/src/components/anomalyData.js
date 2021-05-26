@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import './anomalyData.css';
+
 
 
 
@@ -8,17 +10,20 @@ class AnomalyResult extends Component {
         super(props)
         // this.updateanomaly = this.updateanomaly.bind(this);
         this.state = {
+            // anomalyData: [[123, "aclkm - sdfaf"], [123, "A - F"]],
+            // status: "Table"
             anomalyData: props.AnomalyArr,
             status: "Enter File"
         };
     }
 
     componentWillReceiveProps(newProps){
-        this.setState({ anomalyData: newProps.AnomalyArr})
-        if(newProps.AnomalyArr.length == 0)
+        //this.setState({ anomalyData: [[123, "aclkm - sdfaf"], [123, "A - F"]]})
+        if(this.state.anomalyData.length == 0)
             this.setState({status: "No Anomalies"})
         else
             this.setState({status: "Table"})
+        this.forceUpdate();
         // this.updateanomaly(newProps.AnomalyArr)
     }
 
@@ -44,19 +49,17 @@ class AnomalyResult extends Component {
                 <h3>{this.state.status}</h3>
                 {this.state.status == "Table"? 
                 <div>
-                <table style={{ "borderWidth": "1px", 'borderColor': "#aaaaaa", 'borderStyle': 'solid', }}>
-                    <tr style={{ "borderWidth": "1px", 'borderColor': "#aaaaaa", 'borderStyle': 'solid', "borderCollapse": "collapse" }}>
-                        <th style={{ "borderWidth": "1px", 'borderColor': "#aaaaaa", 'borderStyle': 'solid', "fontSize": "18px" }}>Features</th>
-                        <th style={{ "borderWidth": "1px", 'borderColor': "#aaaaaa", 'borderStyle': 'solid', "fontSize": "18px" }}>Row</th>
+                <table>
+                    <tr>
+                        <th>Features</th>
+                        <th>Row</th>
                     </tr>
                     { this.state.anomalyData.map(row => (
                     <tr>
-                        <td style={{
-                            "borderBottomWidth": "1px", "borderBottom": "dashed", "fontSize": "13px","borderWidth": "1px"
-                        }}>
+                        <td>
                         {row[0]}
                         </td>
-                        <td style={{ "borderBottomWidth": "1px", "borderBottom": "dashed", "fontSize": "13px","borderWidth": "1px"  }}>
+                        <td>
                         {row[1]}
                         </td>
                     </tr>))}
