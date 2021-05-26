@@ -37,7 +37,7 @@ class Models extends Component{
             .then((data) => this.setState({modelss: data}));
     }
 
-    
+     
 
     render() {
         console.log("asdzsd")

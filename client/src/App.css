@@ -36,3 +36,29 @@
     transform: rotate(360deg);
   }
 }
+.wrapApp{
+  position: relative;
+  width: 50%;
+
+}
+
+.dropBox{
+  position: relative;
+  float: right;
+  background-color:#494f5c;
+  padding-right: 10px;
+  padding-left: 10px;
+  width: 40%;
+  
+}
+.AnomalyResult{
+  position: relative;
+  float: left;
+  background-color:#494f5c;
+  padding-right: 10px;
+  padding-left: 10px;
+  width: 40%;
+}
+.righth3{
+  float: right;
+}
