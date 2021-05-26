@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Models from './components/models/Models';
 import DropBoxCSV from './components/DropBoxCSV';
 import AnomalyResult from './components/anomalyData';
 
@@ -19,7 +17,7 @@ class App extends Component{
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className>WebApp</h1>
+          <h1>Flight Inspection App</h1>
           <div className="wrapApp">
             <div className="dropBox">
               <DropBoxCSV getAnomalyArr={(arr)=>{

@@ -34,8 +34,7 @@ class DropBoxCSV extends Component{
       };
 
     sendCSV() {
-        console.log("Sd")
-        fetch(`http://localhost:9876/api/model?model_type=${this.state.isHybrid? 'hybrid': 'regression'}`, {
+        fetch(`http://localhost:8080/api/model?model_type=${this.state.isHybrid? 'hybrid': 'regression'}`, {
             method: 'POST',
             headers: {
             'Accept': 'application/json',
@@ -46,9 +45,9 @@ class DropBoxCSV extends Component{
         .then(response => response.json())
         .then(data => {
           this.setState({AnomalyArr: data});
-          console.log("getting fetch  ", data)
+        //   console.log("getting fetch  ", data)
           this.props.getAnomalyArr(data)
-          console.log('Success:', data);
+        //   console.log('Success:', data);
         })
         .catch((error) => {
           console.error('Error:', error);
