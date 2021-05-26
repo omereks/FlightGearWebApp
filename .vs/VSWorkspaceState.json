@@ -1,7 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\client",
+    "\\client\\src",
+    "\\client\\src\\components",
+    "\\client\\src\\components\\models",
+    "\\server"
   ],
-  "SelectedNode": "\\server",
+  "SelectedNode": "\\client\\src\\components\\DropBoxCSV.js",
   "PreviewInSolutionExplorer": false
 }

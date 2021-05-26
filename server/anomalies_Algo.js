@@ -157,8 +157,8 @@ class TimeSeries {
 
     // method returns specific vector of given feature from the matrix
     getFeatureVector(x) {
-        var line = [];
-        for (var i = 0; i < this.csvMatrix.length; i++) {
+        let line = [];
+        for (let i = 0; i < this.csvMatrix.length; i++) {
             line.push(this.csvMatrix[i][x]);
         }
         return line;
@@ -170,7 +170,7 @@ class TimeSeries {
 
     // method get a feature string and returns its index
     getFeatureNum(featureName) {
-        for (var i = 0; i < this.features.length; i++) {
+        for (let i = 0; i < this.features.length; i++) {
             if (this.features[i] == featureName) {
                 return i;
             }
@@ -210,11 +210,11 @@ class SimpleAnomalyDetector {
     }
 
     findThreshold(size, points) {
-        var linearRegression = linear_reg(points, size);
-        var finalDev = 0;
-        var tempDev;
-        for (var i = 0; i < size; i++) {
-            var p = new Point(points[i].x, points[i].y);
+        let linearRegression = linear_reg(points, size);
+        let finalDev = 0;
+        let tempDev;
+        for (let i = 0; i < size; i++) {
+            let p = new Point(points[i].x, points[i].y);
             tempDev = dev(p, linearRegression);
             finalDev = Math.max(tempDev, finalDev);
         }
@@ -222,23 +222,24 @@ class SimpleAnomalyDetector {
     }
 
     learnNormal(timeSeries, hybridOrReg) {
+        console.log("Start Learn Normal");
         if (hybridOrReg == "hybrid") {
             this.correlationForDetect = 0.5;
         } else {
             this.correlationForDetect = 0.9;
         }
-        var numOfFeatures = timeSeries.getFeatures().length;
-        var numOfLines = timeSeries.getFeatureVector(0).length;
-        for (var i = 0; i < numOfFeatures; i++) {
-            var currentCF = new correlatedFeatures();
+        let numOfFeatures = timeSeries.getFeatures().length;
+        let numOfLines = timeSeries.getFeatureVector(0).length;
+        for (let i = 0; i < numOfFeatures; i++) {
+            let currentCF = new correlatedFeatures();
             currentCF.corrlation = 0;
-            var featureVector1 = timeSeries.getFeatureVector(i);
-            for (var j = i + 1; j < numOfFeatures; j++) {
-                var featureVector2 = timeSeries.getFeatureVector(j);
-                var currentPearson = pearson(featureVector1, featureVector2, numOfLines);
+            let featureVector1 = timeSeries.getFeatureVector(i);
+            for (let j = i + 1; j < numOfFeatures; j++) {
+                let featureVector2 = timeSeries.getFeatureVector(j);
+                let currentPearson = pearson(featureVector1, featureVector2, numOfLines);
                 if ((currentCF.corrlation < currentPearson) && (this.correlationForDetect <= currentPearson)) { // todo here the difference between hybrid and regression
-                    var points = [];
-                    for (var x = 0; x < numOfLines; x++) {
+                    let points = [];
+                    for (let x = 0; x < numOfLines; x++) {
                         points.push(new Point(timeSeries.getFeatureVector(i)[x], timeSeries.getFeatureVector(j)[x]));
                     }
                     if (0.9 <= currentPearson) {
@@ -247,48 +248,46 @@ class SimpleAnomalyDetector {
                         currentCF.corrlation = currentPearson;
                         currentCF.line_reg = linear_reg(points, numOfLines);
                         currentCF.isStrongCorrelation = true;
-                        var xx = this.findThreshold(numOfLines, points);
-                        currentCF.threshold = xx;
+                        currentCF.threshold = this.findThreshold(numOfLines, points);
                     } else {
                         currentCF.feature1 = timeSeries.getFeatures()[i];
                         currentCF.feature2 = timeSeries.getFeatures()[j];
                         currentCF.corrlation = currentPearson;
                         currentCF.lin_reg = linear_reg(points, numOfLines);
                         currentCF.isStrongCorrelation = false;
-                        var c = findMinCircle(points, numOfLines);
-                        currentCF.minimumCircle = c;
+                        currentCF.minimumCircle = findMinCircle(points, numOfLines);
                         currentCF.threshold = currentCF.minimumCircle.radius * 1.1;
                     }
                 }
             }
             if (this.correlationForDetect <= currentCF.corrlation) { this.cf.push(currentCF); }
         }
-        var ff = 5;
     }
 
     detect(timeSeries) {
-        var reports = [];
-        for (var i = 0; i < this.cf.length; i++) {
-            var numOfFeature1 = timeSeries.getFeatureNum(this.cf[i].feature1);
-            var numOfFeature2 = timeSeries.getFeatureNum(this.cf[i].feature2);
-            var featureVector1 = timeSeries.getFeatureVector(numOfFeature1);
-            var featureVector2 = timeSeries.getFeatureVector(numOfFeature2);
+        let reports = [];
+        for (let i = 0; i < this.cf.length; i++) {
+            let numOfFeature1 = timeSeries.getFeatureNum(this.cf[i].feature1);
+            let numOfFeature2 = timeSeries.getFeatureNum(this.cf[i].feature2);
+            let featureVector1 = timeSeries.getFeatureVector(numOfFeature1);
+            let featureVector2 = timeSeries.getFeatureVector(numOfFeature2);
             if (this.cf[i].isStrongCorrelation) {
-                for (var j = 0; j < featureVector1.length; j++) {
-                    var p = new Point(featureVector1[j], featureVector2[j]);
-                    var deviation = dev(p, this.cf[i].line_reg);
+                for (let j = 1; j < featureVector1.length; j++) { // todo changed from j = 0 to j = 1
+                    let p = new Point(featureVector1[j], featureVector2[j]);
+                    let deviation = dev(p, this.cf[i].line_reg);
                     if (this.cf[i].threshold < deviation) {
-                        description = this.cf[i].feature1 + "-" + cf[i].feature2;
+                        description = this.cf[i].feature1 + "-" + this.cf[i].feature2;
                         reports.push_back(new AnomalyReport(description, j + 1));
                     }
                 }
+                // if feature has a weak correlation
             } else {
-                for (var j = 0; j < featureVector1.length; j++) {
-                    var p = new Point(featureVector1[j], featureVector2[j]);
-                    var centerOfCircle = this.cf[i].minimumCircle.center;
-                    var deviation = this.getDistance(p, centerOfCircle);
+                for (let j = 0; j < featureVector1.length; j++) {
+                    let p = new Point(featureVector1[j], featureVector2[j]);
+                    let centerOfCircle = this.cf[i].minimumCircle.center;
+                    let deviation = this.getDistance(p, centerOfCircle);
                     if (this.cf[i].threshold < deviation) {
-                        var description = this.cf[i].feature1 + "-" + this.cf[i].feature2;
+                        let description = this.cf[i].feature1 + "-" + this.cf[i].feature2;
                         //AnomalyReport report(description, j + 1);
                         reports.push_back(new AnomalyReport(description, j + 1)); // todo maybe j without +1
                     }
@@ -319,6 +318,7 @@ console.log("hello");
 */
 
 function learnAlgo(LearnArr, DetectArr, model_type) {
+    console.error("Start Learn Algo")
     let learnTs = new TimeSeries(LearnArr);
     let detectTs = new TimeSeries(DetectArr);
     let detector = new SimpleAnomalyDetector();
