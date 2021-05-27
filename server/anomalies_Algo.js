@@ -84,12 +84,11 @@ function dist(a, b) {
     let ay = parseFloat(a.y);
     let bx = parseFloat(b.x);
     let by = parseFloat(b.y);
-    console.log("ax", ax);
+    /*console.log("ax", ax);
     console.log("ay", ay);
     console.log("bx", bx);
-    console.log("by", by);
+    console.log("by", by);*/
     let distance = Math.sqrt(Math.pow(ax - bx, 2) + Math.pow(ay - by, 2));
-    console.log("Distance", distance);
     return distance;
 }
 function trivialCircle2(p1, p2) {
@@ -117,11 +116,11 @@ function trivialCircle3(p1, p2, p3) {
     return new Circle(center, radius);
 }
 function trivial(P) {
-    if (P.length === 0)
+    if (P.length == 0)
         return new Circle(new Point(0, 0), 0);
-    else if (P.length === 1)
+    else if (P.length == 1)
         return new Circle(P[0], 0);
-    else if (P.length === 2)
+    else if (P.length == 2)
         return trivialCircle2(P[0], P[1]);
 
     // maybe 2 of the points define a small circle that contains the 3ed point
@@ -138,27 +137,26 @@ function trivial(P) {
     return trivialCircle3(P[0], P[1], P[2]);
 }
 function minds(P, R, n) {
-    var element;
+    let element;
     if (n == 0 || R.length == 3) {
         return trivial(R);
     }
-    var i = Math.floor(Math.random() * n) + 1;
-    var p = new Point(P[i].x, P[i].y);
+    let i = Math.floor(Math.random() * n);
+    let randomPoint = new Point(P[i].x, P[i].y);
 
     element = P[i];
     P[i] = P[n - 1];
     P[n - 1] = element;
-    var c = minds(P, R, n - 1);
+    let c = minds(P, R, n - 1);
+    console.log(c); // always shows the same circle
 
-    if (dist(p, c.center) <= c.radius) {
-        console.log("143 (return)");
+    if (dist(randomPoint, c.center) <= c.radius) {
         return c;
     }
-    R.push(p);
+    R.push(randomPoint);
     return minds(P, R, n - 1);
 }
 function findMinCircle(points, size) {
-    //console.log(points);
     let list = [];
     console.log("Before minds");
     let minDisc = minds(points, list, size);
@@ -238,7 +236,7 @@ class SimpleAnomalyDetector {
     }
 
     learnNormal(timeSeries, hybridOrReg) {
-        console.log("Starting learn Algo");
+        console.log("Starting learn Normal");
         if (hybridOrReg == "hybrid") {
             this.correlationForDetect = 0.5;
         } else {
@@ -276,7 +274,8 @@ class SimpleAnomalyDetector {
                         currentCF.corrlation = currentPearson;
                         currentCF.lin_reg = linear_reg(points, numOfLines);
                         currentCF.isStrongCorrelation = false;
-                        console.log("Before Min Circle");
+                        console.log("numOfLine", numOfLines);
+
                         currentCF.minimumCircle = findMinCircle(points, numOfLines);
                         console.log("After Min Circle");
                         currentCF.threshold = currentCF.minimumCircle.radius * 1.1;
