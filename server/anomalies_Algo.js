@@ -5,7 +5,7 @@ class Point {
         this.x = x;
         this.y = y;
     }
-    getX() {return this.x; }
+    getX() { return this.x; }
     getY() { return this.y; }
 }
 class Line {
@@ -53,10 +53,8 @@ function cov(x, y, size) {
     return covar;
 }
 function pearson(x, y, size) {
-    /*let t = Math.sqrt(vars(x, size)) * Math.sqrt(vars(y, size));
-    let temp = cov(x, y, size) / x;
-    return temp;*/
     let result = cov(x, y, size) / (Math.sqrt(vars(x, size)) * Math.sqrt(vars(y, size)));
+    //console.log(result);
     return result;
 }
 function linear_reg(points, size) {
@@ -78,7 +76,21 @@ function dev(p, l) {
 }
 // minimal circle functions
 function dist(a, b) {
-    return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+    /*let ax = a.x;
+    let ay = a.y;
+    let bx = b.x;
+    let by = b.y;*/
+    let ax = parseFloat(a.x);
+    let ay = parseFloat(a.y);
+    let bx = parseFloat(b.x);
+    let by = parseFloat(b.y);
+    console.log("ax", ax);
+    console.log("ay", ay);
+    console.log("bx", bx);
+    console.log("by", by);
+    let distance = Math.sqrt(Math.pow(ax - bx, 2) + Math.pow(ay - by, 2));
+    console.log("Distance", distance);
+    return distance;
 }
 function trivialCircle2(p1, p2) {
     let radius = dist(p1, p2) / 2;
@@ -126,31 +138,32 @@ function trivial(P) {
     return trivialCircle3(P[0], P[1], P[2]);
 }
 function minds(P, R, n) {
-
-    let element;
-    if (n === 0 || R.length === 3) {
+    var element;
+    if (n == 0 || R.length == 3) {
         return trivial(R);
     }
-    let i = Math.floor(Math.random() * n) + 1;
-    let p = new Point(parseFloat(P[i].x), parseFloat(P[i].y)); // todo not sure if parse is needed
-    
-    console.log("Line 136:", p);
+    var i = Math.floor(Math.random() * n) + 1;
+    var p = new Point(P[i].x, P[i].y);
+
     element = P[i];
     P[i] = P[n - 1];
     P[n - 1] = element;
+    var c = minds(P, R, n - 1);
 
-    let c = minds(P, R, n - 1);
-
-    if (dist(p, c.center) <= c.radius)
+    if (dist(p, c.center) <= c.radius) {
+        console.log("143 (return)");
         return c;
-
+    }
     R.push(p);
-
     return minds(P, R, n - 1);
 }
 function findMinCircle(points, size) {
+    //console.log(points);
     let list = [];
-    return minds(points, list, size);
+    console.log("Before minds");
+    let minDisc = minds(points, list, size);
+    console.log("After minds");
+    return minDisc;
 }
 
 class TimeSeries {
@@ -192,7 +205,6 @@ class AnomalyReport {
 /*class TimeSeriesAnomalyDetector {
     constructor() { }
     // todo learn normal
-
 }*/
 
 class correlatedFeatures {
@@ -235,17 +247,21 @@ class SimpleAnomalyDetector {
         let numOfFeatures = timeSeries.getFeatures().length;
         let numOfLines = timeSeries.getFeatureVector(0).length;
         for (let i = 0; i < numOfFeatures; i++) {
-            
+
             let currentCF = new correlatedFeatures();
             currentCF.corrlation = 0;
             let featureVector1 = timeSeries.getFeatureVector(i);
             for (let j = i + 1; j < numOfFeatures; j++) {
                 let featureVector2 = timeSeries.getFeatureVector(j);
                 let currentPearson = pearson(featureVector1, featureVector2, numOfLines);
+                
                 if ((currentCF.corrlation < currentPearson) && (this.correlationForDetect <= currentPearson)) { // todo here the difference between hybrid and regression
                     let points = [];
                     for (let x = 0; x < numOfLines; x++) {
-                        points.push(new Point(timeSeries.getFeatureVector(i)[x], timeSeries.getFeatureVector(j)[x]));
+                        let px = parseFloat(timeSeries.getFeatureVector(i)[x]);
+                        let py = parseFloat(timeSeries.getFeatureVector(j)[x]);
+                        points.push(new Point(px, py)); // todo changed here
+                        //points.push(new Point(timeSeries.getFeatureVector(i)[x], timeSeries.getFeatureVector(j)[x]));
                     }
                     if (0.9 <= currentPearson) {
                         currentCF.feature1 = timeSeries.getFeatures()[i];
@@ -260,7 +276,9 @@ class SimpleAnomalyDetector {
                         currentCF.corrlation = currentPearson;
                         currentCF.lin_reg = linear_reg(points, numOfLines);
                         currentCF.isStrongCorrelation = false;
+                        console.log("Before Min Circle");
                         currentCF.minimumCircle = findMinCircle(points, numOfLines);
+                        console.log("After Min Circle");
                         currentCF.threshold = currentCF.minimumCircle.radius * 1.1;
                     }
                 }
@@ -294,7 +312,7 @@ class SimpleAnomalyDetector {
                     let deviation = this.getDistance(p, centerOfCircle);
                     if (this.cf[i].threshold < deviation) {
                         let description = this.cf[i].feature1 + "-" + this.cf[i].feature2;
-                        reports.push_back(new AnomalyReport(description, j + 1)); // todo maybe j without +1
+                        reports.push(new AnomalyReport(description, j + 1)); // todo maybe j without +1
                     }
                 }
             }
@@ -313,7 +331,7 @@ class SimpleAnomalyDetector {
 
 
 function learnAlgo(LearnArr, DetectArr, model_type) {
-    
+
     let learnTs = new TimeSeries(LearnArr);
     let detectTs = new TimeSeries(DetectArr);
     let detector = new SimpleAnomalyDetector();
