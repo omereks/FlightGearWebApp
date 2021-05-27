@@ -3,7 +3,6 @@
     "",
     "\\client",
     "\\client\\src\\components",
-    "\\client\\src\\components\\models",
     "\\server"
   ],
   "SelectedNode": "\\server\\anomalies_Algo.js",

@@ -1,7 +1,6 @@
 const app = require('./app');
-console.log("Hello from sejh.js");
 const http = require('http');
-const port = 9876;
+const port = 8080;
 
 const server = http.createServer(app);
 
