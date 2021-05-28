@@ -176,7 +176,7 @@ class DropBoxCSV extends Component{
 
 
                 <div>
-                    <button disabled={(this.state.DataDetect.length == 0) || (this.state.DataLearn.length == 0)}
+                    <button disabled={(this.state.DataDetect.length === 0) || (this.state.DataLearn.length === 0)}
                         onClick={() => this.sendCSV()}>
                             Upload CSV Files</button>
                 </div>

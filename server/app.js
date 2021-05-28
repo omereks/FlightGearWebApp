@@ -1,7 +1,7 @@
 const learnAlgo = require('./anomalies_Algo');
 const bodyParser = require('body-parser');
 
-
+console.log("1") //todo delete
 const express = require('express')
 const app = express()
 app.use(bodyParser.json({limit: '10mb', extended: true}))
@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({limit: '10mb', extended: true}))
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
     // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-
+    console.log("2") //todo delete
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     // Request headers you wish to allow
@@ -23,14 +23,11 @@ app.use(function (req, res, next) {
     next();
 });
 
-
-
-
-
-
+console.log("3") //todo delete
 //1
 app.post('/api/model', (req,res) => {
     //getting model type from the uri
+    console.log("2") //todo delete
     const model_type = req.query.model_type;
     //getting data array from body
     const data = req.body;
@@ -46,9 +43,10 @@ app.post('/api/model', (req,res) => {
     res.send(JSON.stringify(result));
 });
 
-
+console.log("4") //todo delete
 //2
 app.get('/api/model', (req,res) => {
+    console.log("5") //todo delete
     const model_id = req.query.model_id;
     res.status(200).json({
         messege: 'hello3'
@@ -57,6 +55,7 @@ app.get('/api/model', (req,res) => {
 
 //3
 app.delete('/api/model', (req,res) => {
+    console.log("6") //todo delete
     const model_id = req.query.model_id;
     res.status(200).json({
         messege: 'hello2'
@@ -66,6 +65,7 @@ app.delete('/api/model', (req,res) => {
 
 //4 work
 app.get('/api/models', (req,res) => {
+    console.log("7") //todo delete
     res.send(require('./db/models.json'));
 });
 
