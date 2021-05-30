@@ -1,4 +1,4 @@
-# Flight Gear Web App
+# Flight Anomalies Web App
 
 ## Table of contents :smile_cat:
 * [General info](#general-info)
@@ -62,7 +62,7 @@ To start the client and the server please follow this steps:
 * Enjoy
 
 ## UML
-
+![Web App UML](https://user-images.githubusercontent.com/60196825/120115223-5e33cc80-c18b-11eb-86bd-1566ec16cfad.jpeg)
 
 
 
